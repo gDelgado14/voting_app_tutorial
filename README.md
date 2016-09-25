@@ -144,4 +144,4 @@ understand the passport session + expression-session + connect-mongo flow
 
 4 - load to EC2 or Google cloud instance
 
-5 - look at cire_spec vote function tests, and see whether you can refactor the `vote` function to use the `fromJS` function
+5 - look at core_spec vote function tests, and see whether you can refactor the `vote` function to use the `fromJS` function
