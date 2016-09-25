@@ -4,6 +4,9 @@ import { List, Map } from 'immutable'
  * 		Public API
  *************************/
 
+export const INITIAL_STATE = Map()
+
+
 
 /**
  * set the entries within a state
@@ -16,6 +19,8 @@ export function setEntries (state, entries) {
 	// Entries should be an Immutable List by the time it's in the actual state tree
 	return state.set('entries', List(entries))
 }
+
+
 
 /**
  * Initialize the voting of a pair of elements within the set of entries
@@ -47,6 +52,8 @@ export function next(state) {
 		entries: entries.skip(2)
 	})
 }
+
+
 
 /**
  * The app's voting functionality

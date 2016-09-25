@@ -7,7 +7,7 @@ the design of the state. In other words, how do we model effectvely the data we'
 
 It's a good idea to draw out the state tree similar to how the author draws it in this tutorial.
 
-One of the key benefits of the Flux architectural pattern is that the application state is all stored in one single tree structure. Everything there is to know about your application's state is stored in one data structure formed out of maps and arrays. This allows you to think about the application state in isolation fro mthe application's behaviour. The state is pure data. It doesn't have methods or functions. And it's all within one big object (at least in Redux).
+One of the key benefits of the Flux architectural pattern is that the application state is all stored in one single tree structure. Everything there is to know about your application's state is stored in one data structure formed out of maps and arrays. This allows you to think about the application state in isolation from the application's behaviour. The state is pure data. It doesn't have methods or functions. And it's all within one big object (at least in Redux).
 
 This tutorial illustrates the beauty of [BDD / TDD](http://jrsinclair.com/articles/2016/gentle-introduction-to-javascript-tdd-intro/) ... the idea is to first think about the expected outcome, and then build it. This forces you to think about a good design. 
 
@@ -76,7 +76,59 @@ describe('application logic', () => {
 ``` 
 
 
-Homework: 
+#### On Redux Actions and Reducers 
+
+An action describes the applications intent to change the state. The application does not alter the state directly, but rather Redux takes care of being the only source of state within the application.
+
+> Every action must contain `type` attribute that describes which operation the action is for. Everything else about the action is up to the implementer's choice.
+
+Facebook has [written](https://github.com/acdlite/flux-standard-action/blob/master/README.md) about good action design.
+
+In the context of our app, this is what some actions would look like: 
+
+```javascript
+{type: 'SET_ENTRIES', entries: ['Trainspotting', '28 Days Later']}
+
+{type: 'NEXT'}
+
+{type: 'VOTE', entry: 'Trainspotting'}
+
+...
+
+/*
+	we must therefore have a mechanism to transform 	actions into function invocations. We do this 	through 'Reducers'
+	
+*/
+
+...
+// This action
+let voteAction = {type: 'VOTE', entry: 'Trainspotting'}
+// should cause this to happen
+return vote(state, voteAction.entry);
+
+```
+
+##### Reducers
+
+Reducers return a new copy of the old state. 
+
+If there is no defined state, then we must define the initial state and return it from within the reducer.
+
+```javascript
+(previousState, action) => newState
+```
+
+Note that if the reducer doesn't recognize the action, it just returns the current state.
+
+What is interesting about the way this reducer works is how it can be generically used to take the application from one state to the next, fiven any type of action. Actually, given a collection of past actions, you can actually [reduce](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce) that collection into the current state. That's why the function is called a reducer: It fullfills the contract of a reduce callback function.
+
+###### Reducer Composition
+
+sdf
+
+--- 
+
+### Homework: 
 
 1 - save voting collections in mongo
 
