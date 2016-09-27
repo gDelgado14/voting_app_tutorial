@@ -73,7 +73,7 @@ export function next(state) {
 export function vote(state, entry) {
 	// https://facebook.github.io/immutable-js/docs/#/Map/updateIn
 	return state.updateIn(
-		['vote', 'tally', entry],
+		['tally', entry],
 		0,
 		tally => tally + 1
 	)

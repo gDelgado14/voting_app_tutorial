@@ -96,7 +96,9 @@ In the context of our app, this is what some actions would look like:
 ...
 
 /*
-	we must therefore have a mechanism to transform 	actions into function invocations. We do this 	through 'Reducers'
+	we must therefore have a mechanism to transform 
+	actions into function invocations. We do this
+	through 'Reducers'
 	
 */
 
@@ -122,9 +124,57 @@ Note that if the reducer doesn't recognize the action, it just returns the curre
 
 What is interesting about the way this reducer works is how it can be generically used to take the application from one state to the next, fiven any type of action. Actually, given a collection of past actions, you can actually [reduce](https://developer.mozilla.org/en/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce) that collection into the current state. That's why the function is called a reducer: It fullfills the contract of a reduce callback function.
 
+> note that we are using plain objects as actions. This is required for Redux.
+
+
 ###### Reducer Composition
 
-sdf
+Each piece of functionality should only be aware of its own piece of state. We should pass it the smallest subtree of state required for it to do its necessary operations. This also simplifies tests.
+
+The [Redux documentation](http://rackt.github.io/redux/docs/basics/Reducers.html) goes into detail about good reducer composition.
+
+
+#### The Redux Store
+
+The Redux Store is an object that stores the state of your application over time. It is the single source of truth for your application.
+
+A Redux Store is initialized with a reducer function, such as the one we have just implemented.
+
+The Store can be thought of as the application's controller. It uses the reducer to dictate the next state of the application. We `dispatch` actions to the Store, and out comes a new state thanks to the Reducer, which is then stored in the store. 
+
+```javascript
+// some_file.js
+import {createStore} from 'redux';
+
+const store = createStore(reducer);
+
+//app_fle.js
+// dispatching an action that the reducer understands
+store.dispatch({type: 'NEXT'}) 
+```
+
+At any point in time, you can obtain the current state from inside the store: 
+
+```javascript
+store.getState();
+```
+
+
+#### Intro to Socket.IO
+
+Not all browsers implement the WebSocket standard the same. Thus we need a wrapper to make real-time web-development seamless accross multiple devices & browsers. 
+
+
+##### Broadcasting State from a Redux Listener
+Our server should be able to let clients know about the current state of the application. It can do so by emitting a sockiet.io event to all connected clients.
+
+In order for us to know when state has changed, we must subscribe to the store. We subscribe by providing a function that the store will call after every action it applies.
+
+
+##### Receiving Remote Redux Actions
+We should also be able to receive updates from clients. What we can do is have our clients emit '`action`' events that we feed directly into our Redux store.
+
+
 
 --- 
 
@@ -145,3 +195,14 @@ understand the passport session + expression-session + connect-mongo flow
 4 - load to EC2 or Google cloud instance
 
 5 - look at core_spec vote function tests, and see whether you can refactor the `vote` function to use the `fromJS` function
+
+6 - Optimize the sending of state to just send a diff of the relevant parts of the state that the client needs. 
+
+note that currently we are sending the WHOLE state tree, not a subset of it. 
+
+This is therefore a two part problem: 
+	- figure out what subset the client needs
+	- send a diff of the old and nextState
+
+	
+	
